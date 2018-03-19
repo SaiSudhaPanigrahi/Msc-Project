@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     build-essential \
     git \
-    python \
-    python-pip \
-    python-setuptools
+    python3 \
+    python-pip3 \
+    python-setuptools3
 
 RUN pip install tf-nightly-gpu
 EXPOSE 6006
