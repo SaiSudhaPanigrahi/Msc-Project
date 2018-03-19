@@ -17,13 +17,13 @@ def load_data(data_dir, flatten=False):
     test_images, test_labels = _read_images_and_labels(test_dir, flatten=flatten, **meta)
 
 
-    return meta , (train_images, train_labels),(test_images, test_labels)
+    #return meta , (train_images, train_labels),(test_images, test_labels)
 
-    '''return (
+    return (
         meta,
         DataSet(train_images, train_labels),
         DataSet(test_images, test_labels),
-    )'''
+    )
 
 
 def _read_images_and_labels(dir_name, flatten, ext='.png', **meta):
