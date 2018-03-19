@@ -6,6 +6,6 @@ python:
 before_install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
-  - python data_utils/gen_captcha.py -dlu --npi 2 -n 10
+  - python data_utils/gen_captcha.py -dl --npi 2 -n 5
 
-script:  "python cnn_n_char.py --data_dir images/char-2-epoch-10/"
+script:  "python cnn_n_char.py --data_dir images/char-2-epoch-5/"
