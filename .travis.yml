@@ -8,4 +8,4 @@ before_install:
   - pip install -r requirements.txt
   - python data_utils/gen_captcha.py -dl --npi 2 -n 8
 
-script:  "python cnn_n_char.py --data_dir images/char-2-epoch-5/"
+script:  "python cnn_n_char.py --data_dir images/char-2-epoch-8/"

@@ -1,3 +1,0 @@
-captcha
-Pillow
-tensorflow-gpu
