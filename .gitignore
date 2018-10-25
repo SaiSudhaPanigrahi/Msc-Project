@@ -1,9 +1,8 @@
 
 #self folders
 .idea
-log/*
-images/*
-
+logs/*
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
