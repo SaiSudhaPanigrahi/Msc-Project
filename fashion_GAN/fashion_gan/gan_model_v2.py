@@ -46,13 +46,13 @@ class DCGAN_V2():
         #self.X_train = X_train[:, np.newaxis, :, :] # uncomment this to run on GPU
 
 
-        self.tensorboard = keras.callbacks.TensorBoard(log_dir='./logs/gan',
-                                                        batch_size=64,
+        self.tensorboard = keras.callbacks.TensorBoard(log_dir='./logs/V2',
+                                                        batch_size=FLAGS.batch_size,
                                                         write_graph=True,
                                                         histogram_freq=0,
                                                         write_images=True,
                                                         write_grads=True)
-        self.checkpointer  = keras.callbacks.ModelCheckpoint(filepath=f'{FLAGS.job_dir}/gan_model.best.hdf5', verbose = 1, save_best_only=True)
+        self.checkpointer  = keras.callbacks.ModelCheckpoint(filepath=f'{FLAGS.job_dir}/gan_model_v2.best.h5', verbose = 1)
 
         # Optimizer
         self.optimizer = Adam(lr=0.0002, beta_1=0.5)
@@ -74,40 +74,42 @@ class DCGAN_V2():
 
     def build_G(self):
         # Generator
-        generator = Sequential()
-        generator.add(Dense(128*7*7, input_dim=self.randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
-        generator.add(LeakyReLU(0.2))
-        generator.add(Reshape((7, 7,128))) # cange this to (128,7,7) if you run on GPU
-        generator.add(UpSampling2D(size=(2, 2)))
-        generator.add(Conv2D(64, kernel_size=(5, 5), padding='same'))
-        generator.add(LeakyReLU(0.2))
-        generator.add(UpSampling2D(size=(2, 2)))
-        generator.add(Conv2D(1, kernel_size=(5, 5), padding='same', activation='tanh'))
-        generator.compile(loss='binary_crossentropy', optimizer=self.optimizer)
-        generator.summary()
+        with tf.variable_scope("Generator"):
+            generator = Sequential()
+            generator.add(Dense(128*7*7, input_dim=self.randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
+            generator.add(LeakyReLU(0.2))
+            generator.add(Reshape((7, 7,128))) # cange this to (128,7,7) if you run on GPU
+            generator.add(UpSampling2D(size=(2, 2)))
+            generator.add(Conv2D(64, kernel_size=(5, 5), padding='same'))
+            generator.add(LeakyReLU(0.2))
+            generator.add(UpSampling2D(size=(2, 2)))
+            generator.add(Conv2D(1, kernel_size=(5, 5), padding='same', activation='tanh'))
+            generator.compile(loss='binary_crossentropy', optimizer=self.optimizer)
+            generator.summary()
         return generator
 
 
     def build_D(self):
         # Discriminator
-        discriminator = Sequential()
-
-        discriminator.add(Conv2D(64, kernel_size=(5, 5), strides=(2, 2), padding='same', input_shape=(28, 28,1), kernel_initializer=initializers.RandomNormal(stddev=0.02)))
-        discriminator.add(LeakyReLU(0.2))                                                # change this to (1,28,28) if you run on GPU
-        discriminator.add(Dropout(0.3))
-        discriminator.add(Conv2D(128, kernel_size=(5, 5), strides=(2, 2), padding='same'))
-        discriminator.add(LeakyReLU(0.2))
-        discriminator.add(Dropout(0.3))
-        discriminator.add(Flatten())
-        discriminator.add(Dense(1, activation='sigmoid'))
-        discriminator.compile(loss='binary_crossentropy', optimizer=self.optimizer)
-        discriminator.summary()
+        with tf.variable_scope("Discriminator"):
+            discriminator = Sequential()
+            discriminator.add(Conv2D(64, kernel_size=(5, 5), strides=(2, 2), padding='same', input_shape=(28, 28,1), kernel_initializer=initializers.RandomNormal(stddev=0.02)))
+            discriminator.add(LeakyReLU(0.2))                                                # change this to (1,28,28) if you run on GPU
+            discriminator.add(Dropout(0.3))
+            discriminator.add(Conv2D(128, kernel_size=(5, 5), strides=(2, 2), padding='same'))
+            discriminator.add(LeakyReLU(0.2))
+            discriminator.add(Dropout(0.3))
+            discriminator.add(Flatten())
+            discriminator.add(Dense(1, activation='sigmoid'))
+            discriminator.compile(loss='binary_crossentropy', optimizer=self.optimizer)
+            discriminator.summary()
         return discriminator
 
         
 
 
-    def __call__(self, epochs=1, batchSize=128):
+    def __call__(self):
+        epochs ,batchSize = FLAGS.epochs, FLAGS.batch_size
         batchCount = self.X_train.shape[0] // batchSize
         print (f'Epochs:{epochs}\nBatch size: {batchSize}\t | Batches per epoch: {batchCount}')
             
@@ -138,23 +140,39 @@ class DCGAN_V2():
                 gloss = self.gan.train_on_batch(noise, yGen)
 
             # Store loss of most recent batch from this epoch
+            print ("%d/%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (e,FLAGS.epochs, dloss, 100*dloss, gloss))
+
             self.dLosses.append(dloss)
             self.gLosses.append(gloss)
 
-            if e == 1 or e % 5 == 0:
+            # write tensorboard logs
+            self.tensorboard.set_model(self.discriminator)
+            self.tensorboard.on_epoch_end(e,self.named_logs(self.discriminator,dloss))
+            
+            self.tensorboard.set_model(self.generator)
+            self.tensorboard.on_epoch_end(e,self.named_logs(self.generator,gloss))
+
+            if e == 1 or e % FLAGS.save_step == 0:
                 noise = np.random.normal(0, 1, size=[25, self.randomDim])
                 imgs = self.generator.predict(noise)
                 plot_generated_images(imgs,e)
                 self.save_models(e)
 
         # Plot losses from every epoch
-        plot_loss(e , self.dLosses,self.gLosses)
+        #plot_loss(e , self.dLosses,self.gLosses)
 
     # Save the generator and discriminator networks (and weights) for later use
     def save_models(self,epoch):
-        self.generator.save('dcgan_generator.h5')
-        self.discriminator.save('dcgan_discriminator.h5')
-        self.gan.save('dcgan_combined.h5')        
+        self.generator.save(f'{FLAGS.job_dir}/dcgan_generator_v2.h5')
+        self.discriminator.save(f'{FLAGS.job_dir}/dcgan_discriminator_v2.h5')
+        self.gan.save(f'{FLAGS.job_dir}/dcgan_combined_v2.h5')       
+
+
+    def named_logs(self,model, logs):
+        result = {}
+        for l in zip(model.metrics_names, logs):
+            result[l[0]] = l[1]
+        return result     
 
 if __name__ == '__main__':
     model = DCGAN_V2()

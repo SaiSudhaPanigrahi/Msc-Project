@@ -17,7 +17,7 @@ flags = tf.app.flags
 flags.DEFINE_integer("epochs", 2, "Epoch to train [250]")
 flags.DEFINE_integer("batch_size",128 , "The number of batch images [64]")
 flags.DEFINE_string("log_dir" , 'logs' , "Directory name to save the logs for tensorboard [logs]")
-flags.DEFINE_string("job_dir" , 'checkpoints' , "Directory name to save the checkpoints and weights [checkpoints]")
+flags.DEFINE_string("job_dir" , '../weights' , "Directory name to save the checkpoints and weights [checkpoints]")
 FLAGS = flags.FLAGS
 
 
@@ -26,9 +26,9 @@ FLAGS = flags.FLAGS
 def main(_):
 
 
-    #model  = cnn_fashion()
-    #model()
-    (x_train, y_train) ,(_, _)  = fashion_mnist.load_data()
+    model  = cnn_fashion()
+    model()
+    #(x_train, y_train) ,(_, _)  = fashion_mnist.load_data()
     '''model = load_model("./fashion_cnn/logs/fashion-cnn-weights.best.hdf5")
     
 
