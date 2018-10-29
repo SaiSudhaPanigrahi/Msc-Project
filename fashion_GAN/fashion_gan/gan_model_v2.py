@@ -145,12 +145,13 @@ class DCGAN_V2():
             self.dLosses.append(dloss)
             self.gLosses.append(gloss)
 
-            # write tensorboard logs
+             # write tensorboard logs
             self.tensorboard.set_model(self.discriminator)
-            self.tensorboard.on_epoch_end(e,self.named_logs(self.discriminator,dloss))
+            self.tensorboard.on_epoch_end(e,{"loss":dloss , "accuracy":dloss})
             
             self.tensorboard.set_model(self.generator)
-            self.tensorboard.on_epoch_end(e,self.named_logs(self.generator,gloss))
+            self.tensorboard.on_epoch_end(e,{"loss":gloss , "accuracy":dloss})
+
 
             if e == 1 or e % FLAGS.save_step == 0:
                 noise = np.random.normal(0, 1, size=[25, self.randomDim])
