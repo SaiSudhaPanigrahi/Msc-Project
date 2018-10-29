@@ -1,6 +1,8 @@
 
 #self folders
 .idea
+playground/dcgan/data/
+.vscode/
 
 .vscode/
 playground/dcgan/data/

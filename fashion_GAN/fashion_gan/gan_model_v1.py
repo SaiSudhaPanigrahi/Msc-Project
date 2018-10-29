@@ -130,12 +130,12 @@ class DCGAN():
                 g_loss = self.combined.train_on_batch(noise, valid)
                 #tf.summary.scalar("g_loss",g_loss) # add by moti
 
-                '''self.tensorboard.set_model(self.discriminator)
+                self.tensorboard.set_model(self.discriminator)
                 self.tensorboard.on_epoch_end(epoch,self.named_logs(self.discriminator,d_loss_real))
                 self.tensorboard.on_epoch_end(epoch,self.named_logs(self.discriminator,d_loss_fake))
 
-                self.tensorboard.set_model(self.combined)
-                self.tensorboard.on_epoch_end(epoch,self.named_logs(self.combined,g_loss))'''
+                self.tensorboard.set_model(self.generator)
+                self.tensorboard.on_epoch_end(epoch,self.named_logs(self.generator,g_loss))
                 
                
                 # Plot the progress

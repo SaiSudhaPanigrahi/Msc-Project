@@ -42,7 +42,7 @@ class cnn_fashion():
                             write_images=True,
                             write_grads=True)
 
-        self.checkpointer = ModelCheckpoint(filepath=f'./{FLAGS.job_dir}/weights.best.hdf5', verbose = 1, save_best_only=True)   
+        self.checkpointer = ModelCheckpoint(filepath=f'./{FLAGS.job_dir}/fashion_mnist.weights.best.hdf5', verbose = 1, save_best_only=True)   
             
         print("x_train shape:", self.x_train.shape, "y_train shape:", self.y_train.shape)
 
@@ -95,28 +95,28 @@ class cnn_fashion():
         self.model.add(Dense(256,activation="relu"))
         self.model.add(Dropout(0.4))
         self.model.add(Dense(10,activation="softmax"))'''
+        with tf.variable_scope("cnn"):
+            self.model.add(BatchNormalization(input_shape=(28,28,1)))
+            self.model.add(Conv2D(64, (5, 5), padding='same', activation='relu'))
+            self.model.add(MaxPool2D(pool_size=(2, 2), strides=(2,2)))
+            self.model.add(Dropout(0.25))
 
-        self.model.add(BatchNormalization(input_shape=(28,28,1)))
-        self.model.add(Conv2D(64, (5, 5), padding='same', activation='relu'))
-        self.model.add(MaxPool2D(pool_size=(2, 2), strides=(2,2)))
-        self.model.add(Dropout(0.25))
+            self.model.add(BatchNormalization(input_shape=(28,28,1)))
+            self.model.add(Conv2D(128, (5, 5), padding='same', activation='relu'))
+            self.model.add(MaxPool2D(pool_size=(2, 2)))
+            self.model.add(Dropout(0.25))
 
-        self.model.add(BatchNormalization(input_shape=(28,28,1)))
-        self.model.add(Conv2D(128, (5, 5), padding='same', activation='relu'))
-        self.model.add(MaxPool2D(pool_size=(2, 2)))
-        self.model.add(Dropout(0.25))
+            self.model.add(BatchNormalization(input_shape=(28,28,1)))
+            self.model.add(Conv2D(256, (5, 5), padding='same', activation='relu'))
+            self.model.add(MaxPool2D(pool_size=(2, 2), strides=(2,2)))
+            self.model.add(Dropout(0.25))
 
-        self.model.add(BatchNormalization(input_shape=(28,28,1)))
-        self.model.add(Conv2D(256, (5, 5), padding='same', activation='relu'))
-        self.model.add(MaxPool2D(pool_size=(2, 2), strides=(2,2)))
-        self.model.add(Dropout(0.25))
-
-        self.model.add(Flatten())
-        self.model.add(Dense(256))
-        self.model.add(Activation('relu'))
-        self.model.add(Dropout(0.5))
-        self.model.add(Dense(10))
-        self.model.add(Activation('softmax'))
+            self.model.add(Flatten())
+            self.model.add(Dense(256))
+            self.model.add(Activation('relu'))
+            self.model.add(Dropout(0.5))
+            self.model.add(Dense(10))
+            self.model.add(Activation('softmax'))
 
         if USE_TPU:
             #credentials = GoogleCredentials.from_stream(SERVICE_ACCOUNT_FILE) 
@@ -150,9 +150,9 @@ class cnn_fashion():
         score = self.model.evaluate(self.x_test, self.y_test, verbose=0)
         # Print test accuracy
         print('\n', 'Test accuracy:', score[1])  
-        if score[1] >=0.9:
+        '''if score[1] >=0.9:
             self.model.save("./fashion_cnn/weights/fashion_%2f.hdf5" % score[1]) 
-            print("model saved in 'weights' folder...")      
+            print("model saved in 'weights' folder...")     ''' 
 
     def Predict(self,predict):
         pass
