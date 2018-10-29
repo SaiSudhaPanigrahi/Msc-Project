@@ -1,6 +1,6 @@
 # M-sc-Project
 Deep neural network project from M.sc in software engineering.  
-A different approach to text to image synthesis that show in this paper [here]("https://arxiv.org/abs/1605.05396")  
+A different approach to text to image synthesis that show in this paper [here](https://arxiv.org/abs/1605.05396)  
 
 we define a simple approach that trained on fasion_mnist dataset.  
 ### Architecture: 
