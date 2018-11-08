@@ -1,4 +1,4 @@
-# M-sc-Project
+# M-sc-Project  [![Build Status](https://travis-ci.org/motkeg/Msc-Project.svg?branch=master)](https://travis-ci.org/motkeg/Msc-Project)
 Deep neural network project from M.sc in software engineering.  
 A different approach to text to image synthesis that show in this paper [here](https://arxiv.org/abs/1605.05396)  
 
