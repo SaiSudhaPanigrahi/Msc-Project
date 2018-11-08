@@ -8,4 +8,4 @@ before_install:
   - pip install -r requirements.txt
   
 
-script:  "python ./fashion_GAN/main.py --label='dress' "
+script:  "python ./fashion_GAN/main.py --label=dress "
