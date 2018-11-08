@@ -33,7 +33,7 @@ def main(_):
     # load the generator model        
     generator  = load_model("./weights/dcgan_generator.h5")
     # load the cnn model and add it to Reshape layer - because it trained on GPU
-    model = load_model('../weights/fashion-cnn-weights.best.hdf5')
+    model = load_model('./weights/fashion-cnn-weights.best.hdf5')
     fashion_cnn.add(model)
     #fashion_cnn = keras.models.Model(keras.layers.Reshape((28,28,1)), model.output)
     
