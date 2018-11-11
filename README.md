@@ -1,10 +1,10 @@
-# M-sc-Project  [![Build Status](https://travis-ci.org/motkeg/Msc-Project.svg?branch=master)](https://travis-ci.org/motkeg/Msc-Project)
+# M-sc-Project   [![Build Status](https://travis-ci.org/motkeg/Msc-Project.svg?branch=master)](https://travis-ci.org/motkeg/Msc-Project)   
 Deep neural network project from M.sc in software engineering.  
 A different approach to text to image synthesis that show in this paper [here](https://arxiv.org/abs/1605.05396)  
 
 ## prerequisites:
 - python >=3.6  
-- tensorflow >=1.11  
+- tensorflow-gpu >=1.11  
 
 
 

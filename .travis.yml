@@ -1,8 +1,12 @@
 language: python
+sudo: true
+dist: xenial
 cache: pip
 python:
   - "3.6"
-
+notifications:
+  recipients:
+    - motiga14+travis-ci@gmail.com
 before_install:
   - pip install --upgrade pip
   - pip install -r requirements.txt
